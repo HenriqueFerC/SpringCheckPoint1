@@ -22,7 +22,7 @@ public class Funcionario extends Pessoa{
     private String cargo;
 
 //    @ManyToMany
-//    @JoinColumn(name="ID")
+//    @JoinColumn(name="ID_CLIENTE")
 //    private Cliente cliente;
 
     public Funcionario(Long id, String nome, int idade, String cpf, double salario, String cargo) {
@@ -34,7 +34,6 @@ public class Funcionario extends Pessoa{
     public Funcionario(CadastrarFuncionarioDto funcionarioDto){
         nome = funcionarioDto.nome();
         idade = funcionarioDto.idade();
-//        endereco = funcionarioDto.endereco();
         cpf = funcionarioDto.cpf();
         salario = funcionarioDto.salario();
         cargo = funcionarioDto.cargo();

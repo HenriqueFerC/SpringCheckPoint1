@@ -9,6 +9,7 @@ import br.com.fiap.CheckPoint1.model.Funcionario;
 import br.com.fiap.CheckPoint1.repository.FuncionarioRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -35,8 +36,12 @@ public class FuncionarioController {
     @DeleteMapping("{id}")
     @Transactional
     public ResponseEntity<Void> deletar(@PathVariable("id") Long id){
-        funcionarioRepository.deleteById(id);
-        return ResponseEntity.noContent().build();
+        try {
+            funcionarioRepository.deleteById(id);
+            return ResponseEntity.noContent().build();
+        } catch (EmptyResultDataAccessException e){
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PutMapping("{id}")
@@ -49,14 +54,22 @@ public class FuncionarioController {
 
     @GetMapping("{id}")
     public ResponseEntity<DetalhesFuncionarioDto> buscarPorId(@PathVariable("id") Long id){
-        var funcionario = funcionarioRepository.getReferenceById(id);
-        return ResponseEntity.ok(new DetalhesFuncionarioDto(funcionario));
+        try {
+            var funcionario = funcionarioRepository.getReferenceById(id);
+            return ResponseEntity.ok(new DetalhesFuncionarioDto(funcionario));
+        }catch (EmptyResultDataAccessException e){
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping
     public ResponseEntity<List<ListagemFuncionarioDto>> listar(Pageable pageable){
         var lista = funcionarioRepository.findAll(pageable).stream().map(ListagemFuncionarioDto::new).toList();
+        if(lista.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
         return ResponseEntity.ok(lista);
+
     }
 
 }

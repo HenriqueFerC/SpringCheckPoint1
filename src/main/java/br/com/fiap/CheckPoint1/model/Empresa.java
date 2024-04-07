@@ -35,7 +35,7 @@ public class Empresa {
 //    private Departamento departamento;
 //
 //    @OneToMany
-//    @JoinColumn(name="ID")
+//    @JoinColumn(name="ID_FUNCIONARIO")
 //    private Funcionario funcionario;
 
     public Empresa(CadastroEmpresaDto empresaDto){

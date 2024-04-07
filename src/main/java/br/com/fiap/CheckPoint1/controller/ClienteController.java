@@ -8,6 +8,7 @@ import br.com.fiap.CheckPoint1.model.Cliente;
 import br.com.fiap.CheckPoint1.repository.ClienteRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,8 +35,12 @@ public class ClienteController {
     @DeleteMapping("{id}")
     @Transactional
     public ResponseEntity<Void> deletar(@PathVariable("id") Long id){
-        clienteRepository.deleteById(id);
-        return ResponseEntity.noContent().build();
+        try {
+            clienteRepository.deleteById(id);
+            return ResponseEntity.noContent().build();
+        } catch (EmptyResultDataAccessException e){
+            return ResponseEntity.notFound().build();
+        }
     }
 
 
@@ -49,14 +54,22 @@ public class ClienteController {
 
     @GetMapping("{id}")
     public ResponseEntity<DetalhesClienteDto> buscarPorId(@PathVariable("id") Long id){
-        var cliente = clienteRepository.getReferenceById(id);
-        return ResponseEntity.ok(new DetalhesClienteDto(cliente));
+        try {
+            var cliente = clienteRepository.getReferenceById(id);
+            return ResponseEntity.ok(new DetalhesClienteDto(cliente));
+        } catch (EmptyResultDataAccessException e){
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping
     public ResponseEntity<List<ListagemClienteDto>> listar(Pageable pageable){
-       var lista = clienteRepository.findAll(pageable).stream().map(ListagemClienteDto::new).toList();
-       return ResponseEntity.ok(lista);
+
+        var lista = clienteRepository.findAll(pageable).stream().map(ListagemClienteDto::new).toList();
+        if(lista.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(lista);
     }
 
 }

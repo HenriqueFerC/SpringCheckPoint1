@@ -9,6 +9,7 @@ import br.com.fiap.CheckPoint1.model.Empresa;
 import br.com.fiap.CheckPoint1.repository.EmpresaRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,8 +34,12 @@ public class EmpresaController {
     @DeleteMapping("{id}")
     @Transactional
     public ResponseEntity<Void> deletar(@PathVariable("id") Long id){
-        empresaRepository.deleteById(id);
-        return ResponseEntity.noContent().build();
+        try {
+            empresaRepository.deleteById(id);
+            return ResponseEntity.noContent().build();
+        } catch (EmptyResultDataAccessException e){
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PutMapping("{id}")
@@ -47,13 +52,21 @@ public class EmpresaController {
 
     @GetMapping("{id}")
     public ResponseEntity<DetalhesEmpresaDto> buscarPorId(@PathVariable("id") Long id){
-        var empresa = empresaRepository.getReferenceById(id);
-        return ResponseEntity.ok(new DetalhesEmpresaDto(empresa));
+        try {
+            var empresa = empresaRepository.getReferenceById(id);
+            return ResponseEntity.ok(new DetalhesEmpresaDto(empresa));
+        } catch (EmptyResultDataAccessException e){
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping
     public ResponseEntity<List<ListagemEmpresaDto>> listar(Pageable pageable){
+
         var lista = empresaRepository.findAll(pageable).stream().map(ListagemEmpresaDto::new).toList();
+        if(lista.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
         return ResponseEntity.ok(lista);
     }
 

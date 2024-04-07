@@ -21,7 +21,6 @@ public class Cliente extends Pessoa{
     public Cliente(CadastroClienteDto clienteDto){
         nome = clienteDto.nome();
         idade = clienteDto.idade();
-//        endereco = clienteDto.endereco();
         cpf = clienteDto.cpf();
     }
 

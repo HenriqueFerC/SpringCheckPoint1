@@ -8,6 +8,7 @@ import br.com.fiap.CheckPoint1.model.Endereco;
 import br.com.fiap.CheckPoint1.repository.EnderecoRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,8 +35,12 @@ public class EnderecoController {
     @DeleteMapping("{id}")
     @Transactional
     public ResponseEntity<Void> deletar(@PathVariable("id") Long id){
-        enderecoRepository.deleteById(id);
-        return ResponseEntity.noContent().build();
+        try {
+            enderecoRepository.deleteById(id);
+            return ResponseEntity.noContent().build();
+        }catch (EmptyResultDataAccessException e){
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PutMapping("{id}")
@@ -48,14 +53,24 @@ public class EnderecoController {
 
     @GetMapping("{id}")
     public ResponseEntity<DetalhesEnderecoDto> buscarPorId(@PathVariable("id") Long id){
-        var endereco = enderecoRepository.getReferenceById(id);
-        return ResponseEntity.ok(new DetalhesEnderecoDto(endereco));
+        try {
+            var endereco = enderecoRepository.getReferenceById(id);
+            return ResponseEntity.ok(new DetalhesEnderecoDto(endereco));
+        } catch (EmptyResultDataAccessException e){
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping
     public ResponseEntity<List<ListagemEnderecoDto>> listar(Pageable pageable){
+
         var lista = enderecoRepository.findAll(pageable).stream().map(ListagemEnderecoDto::new).toList();
+        if(lista.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
         return ResponseEntity.ok(lista);
+
+
     }
 
 }

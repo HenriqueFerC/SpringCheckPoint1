@@ -7,13 +7,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-@SuppressWarnings("JpaAttributeTypeInspection")
+
 @Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 
 @Entity
-@EntityListeners(AuditingEntityListener.class)
 public abstract class Pessoa {
 
     @Id
@@ -27,9 +26,9 @@ public abstract class Pessoa {
     @Column(name="IDADE", length = 3, nullable = false)
     protected int idade;
 
-//    @OneToMany
-//    @JoinColumn(name="ID_ENDERECO")
-//    protected Endereco endereco;
+    //@OneToOne(cascade = CascadeType.ALL)
+    //@JoinColumn(name="ID_ENDERECO")
+    //protected Endereco endereco;
 
     @Column(name="CPF", length = 14, nullable = false)
     protected String cpf;

@@ -1,6 +1,5 @@
 package br.com.fiap.CheckPoint1.controller;
 
-import br.com.fiap.CheckPoint1.dto.cliente.AtualizarClienteDto;
 import br.com.fiap.CheckPoint1.dto.funcionario.AtualizarFuncionarioDto;
 import br.com.fiap.CheckPoint1.dto.funcionario.CadastrarFuncionarioDto;
 import br.com.fiap.CheckPoint1.dto.funcionario.DetalhesFuncionarioDto;

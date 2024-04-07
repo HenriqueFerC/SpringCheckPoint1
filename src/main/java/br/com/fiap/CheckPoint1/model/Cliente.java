@@ -14,6 +14,7 @@ import lombok.Setter;
 @Table(name="TB_CLIENTE")
 public class Cliente extends Pessoa{
 
+
     public Cliente(Long id, String nome, int idade, String cpf) {
         super(id, nome, idade, cpf);
     }

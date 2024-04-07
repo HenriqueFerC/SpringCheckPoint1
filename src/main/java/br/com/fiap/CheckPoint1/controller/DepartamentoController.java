@@ -44,9 +44,9 @@ public class DepartamentoController {
         }
     }
 
-    @PutMapping("id")
+    @PutMapping("{id}")
     @Transactional
-    public ResponseEntity<DetalhesDepartamentoDto> atualizar(@PathVariable("id") Long id, AtualizarDepartamentoDto departamentoDto){
+    public ResponseEntity<DetalhesDepartamentoDto> atualizar(@PathVariable("id") Long id, @RequestBody AtualizarDepartamentoDto departamentoDto){
         var departamento = departamentoRepository.getReferenceById(id);
         departamento.atualizarDepartamento(departamentoDto);
         return ResponseEntity.ok(new DetalhesDepartamentoDto(departamento));

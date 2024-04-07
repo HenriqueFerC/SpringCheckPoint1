@@ -1,6 +1,5 @@
 package br.com.fiap.CheckPoint1.controller;
 
-import br.com.fiap.CheckPoint1.dto.departamento.ListagemDepartamentoDto;
 import br.com.fiap.CheckPoint1.dto.empresa.AtualizarEmpresaDto;
 import br.com.fiap.CheckPoint1.dto.empresa.CadastroEmpresaDto;
 import br.com.fiap.CheckPoint1.dto.empresa.DetalhesEmpresaDto;
@@ -24,6 +23,8 @@ public class EmpresaController {
     @Autowired
     private EmpresaRepository empresaRepository;
 
+    @PostMapping
+    @Transactional
     public ResponseEntity<DetalhesEmpresaDto> cadastrar(@RequestBody CadastroEmpresaDto empresaDto, UriComponentsBuilder uriBuilder){
         var empresa = new Empresa(empresaDto);
         empresaRepository.save(empresa);
@@ -44,7 +45,7 @@ public class EmpresaController {
 
     @PutMapping("{id}")
     @Transactional
-    public ResponseEntity<DetalhesEmpresaDto> atualizar(@PathVariable("id") Long id, AtualizarEmpresaDto empresaDto){
+    public ResponseEntity<DetalhesEmpresaDto> atualizar(@PathVariable("id") Long id, @RequestBody AtualizarEmpresaDto empresaDto){
         var empresa = empresaRepository.getReferenceById(id);
         empresa.atualizarEmpresa(empresaDto);
         return ResponseEntity.ok(new DetalhesEmpresaDto(empresa));
